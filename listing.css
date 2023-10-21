@@ -84,7 +84,7 @@
 #cards-container{
     padding: 10px;
     width: 55%;
-    height: 420px;
+    height: 700px;
     /* border: 1px solid red; */
     overflow-y: hidden;
     overflow-y: scroll;
@@ -125,7 +125,7 @@
 
 #map-container{
     width: 45%;
-    height: 430px;
+    height: 700px;
     border: 1px solid blue;
 }
 
