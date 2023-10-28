@@ -197,3 +197,27 @@
     font-size: 0px;
 }
 
+
+
+.buttons-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttons-container>button{
+        border: none;
+        color: white;
+        padding: 5px;
+        padding-inline: 15px;
+        border-radius: 20px;
+        cursor: pointer;
+}
+
+.buttons-container>button:nth-child(1){
+    background-color: orangered;
+}
+
+.buttons-container>button:nth-child(2){
+    background-color: rgb(94, 128, 42);
+}
+

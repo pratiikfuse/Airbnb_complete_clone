@@ -3,7 +3,7 @@ const url =
 const options = {
   method: "GET",
   headers: {
-    "X-RapidAPI-Key": "17fdd2ceb0msh52562bc1770e0cbp14da61jsn3fcb86924c1c",
+    "X-RapidAPI-Key": "78b4516688msh7e8016d418241e8p154789jsnc3428f0160e4",
     "X-RapidAPI-Host": "airbnb13.p.rapidapi.com",
   },
 };
@@ -26,6 +26,12 @@ const monthMap = {
 async function fetchData(options) {
   try {
     let location = localStorage.getItem("location");
+
+    // show all hotels in location on map
+
+    // const globalFrame = document.getElementById("iframe");
+    // globalFrame.src = `https://maps.google.com/maps?q=${location}%20Dates%20hotels&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;`;
+    // createIframe(location);
     let checkInDate = localStorage.getItem("checkInDate");
     let checkOutDate = localStorage.getItem("checkOutDate");
     let guestCount = localStorage.getItem("guestCount");
@@ -139,13 +145,40 @@ function createCard(dataObject) {
 
   divChild2.append(divChild2Child1, divChild2Child2);
 
-  div.append(likeImage, divChild1, ul, divChild2);
+  // createButtonsDiv
+  let buttonContainer = document.createElement("div");
+  buttonContainer.className = "buttons-container";
+
+  let costButton = document.createElement("button");
+  costButton.innerText = "Cost Details";
+
+  // direction button
+  let directionButton = document.createElement("button");
+  directionButton.innerText = "Get Direction";
+
+  directionButton.addEventListener("click", () => {
+    const iframe = document.getElementById("iframe");
+    iframe.src = `https://maps.google.com/maps?q=${dataObject.lat}, ${dataObject.lng}&z=15&output=embed`;
+  });
+
+  buttonContainer.append(costButton, directionButton);
+
+  div.append(likeImage, divChild1, ul, divChild2, buttonContainer);
 
   cardDiv.appendChild(div);
 
   return cardDiv;
 }
 
+// function createIframe(location) {
+//   const iframe = document.getElementById("iframe");
+//   iframe.remove();
+//   const newIframe = document.createElement("iframe");
+
+//   newIframe.id = "iframe";
+//   newIframe.src = `https://maps.google.com/maps?q=${location}%20Dates%20hotels&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;`;
+//   document.getElementById("map-container").appendChild(newIframe);
+// }
 fetchData(options);
 
 // {
