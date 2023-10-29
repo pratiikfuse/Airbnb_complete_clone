@@ -58,25 +58,25 @@ async function fetchData(options) {
     // console.log(data.length);
     // let iframe = document.getElementById("iframe");
     // iframe.src = `https://maps.google.com/maps?q=${location}%20Dates%20hotels&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;output=embed`;
-    displayData(data);
+    displayData(data, checkInDate, checkOutDate);
   } catch (error) {
     console.error(error);
   }
 }
 const cardsContainer = document.getElementById("cards-container");
 
-function displayData(dataArray) {
+function displayData(dataArray, checkInDate, checkOutDate) {
   //   console.log(dataArray);
   cardsContainer.innerHTML = "";
   for (let i = 0; i < dataArray.length; i++) {
     let dataObject = dataArray[i];
-    let cardDiv = createCard(dataObject);
+    let cardDiv = createCard(dataObject, checkInDate, checkOutDate);
 
     cardsContainer.appendChild(cardDiv);
   }
 }
 
-function createCard(dataObject) {
+function createCard(dataObject, checkInDate, checkOutDate) {
   // create div for card
   let cardDiv = document.createElement("div");
   cardDiv.className = "card";
@@ -141,7 +141,7 @@ function createCard(dataObject) {
   );
 
   let divChild2Child2 = document.createElement("div");
-  divChild2Child2.innerHTML = `$<span class="price">${dataObject.price.rate}</span> /night`;
+  divChild2Child2.innerHTML = `$<span class="price">${dataObject.price.priceItems[0].amount}</span> /night`;
 
   divChild2.append(divChild2Child1, divChild2Child2);
 
@@ -151,6 +151,76 @@ function createCard(dataObject) {
 
   let costButton = document.createElement("button");
   costButton.innerText = "Cost Details";
+
+  costButton.addEventListener("click", () => {
+    const diffInTime = checkOutDate.getTime() - checkInDate.getTime();
+    const nights = parseInt(diffInTime / (1000 * 3600 * 24));
+    const modalContainer = document.getElementById("modal-container");
+
+    console.log(dataObject.price.priceItems);
+    const amountPerNight = parseInt(dataObject.price.priceItems[0].amount);
+    // console.log(amountPerNight);
+    // const cleaningFees = parseInt(dataObject.price.priceItems[1].amount);
+    // console.log(cleaningFees);
+    // const serviceFees = 0;
+    // console.log(serviceFees);
+    // const taxes = parseInt(dataObject.price.priceItems[3].amount);
+    // let serviceFees = 0;
+    // let taxes = 0;
+    // console.log(taxes);
+
+    // const total = amountPerNight * nights + cleaningFees + serviceFees + taxes;
+    modalContainer.innerHTML = `
+    <div id="modal">
+    <div id="close-modal">x</div>
+    <div id="dates">
+      <div id="check-in">
+        <p>check-in</p>
+        <p class="date">${checkInDate.getDate()}/${checkInDate.getMonth()}/${checkInDate.getFullYear()}</p>
+      </div>
+      <div id="check-out">
+        <p>check-out</p>
+        <p class="date">${checkOutDate.getDate()}/${checkOutDate.getMonth()}/${checkOutDate.getFullYear()}</p>
+      </div>
+    </div>
+    <button id="book">Reserve</button>
+    <div id="price-container">
+      <div>
+        <p>$${amountPerNight} X ${nights} nights</p>
+        <p>$${amountPerNight * nights}</p>
+      </div>
+    </div>
+  </div>`;
+    const priceContainer = document.getElementById("price-container");
+    let arr = dataObject.price.priceItems;
+    let sum = 0;
+    for (let i = 1; i < arr.length; i++) {
+      const div = document.createElement("div");
+      const title = document.createElement("p");
+      title.innerText = arr[i].title;
+      const amount = document.createElement("p");
+      amount.innerText = `$${arr[i].amount}`;
+
+      sum += parseInt(arr[i].amount);
+      div.append(title, amount);
+      priceContainer.appendChild(div);
+    }
+
+    let total = sum + amountPerNight * nights;
+    priceContainer.appendChild(document.createElement("hr"));
+    let totalDiv = document.createElement("div");
+    totalDiv.innerHTML = `
+    <p>Total</p>
+    <p>$${total}</p>
+    `;
+    priceContainer.appendChild(totalDiv);
+    modalContainer.style.display = "flex";
+    const closeModal = document.getElementById("close-modal");
+    closeModal.addEventListener("click", (e) => {
+      e.target.parentNode.parentNode.style.display = "none";
+      e.target.remove();
+    });
+  });
 
   // direction button
   let directionButton = document.createElement("button");
